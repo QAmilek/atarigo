@@ -64,6 +64,19 @@ func (stone *Stone) getOpponents(board [][]int) []Stone {
 	return opponents
 }
 
+func (stone *Stone) getFriends(board [][]int) []Stone {
+	neighboors := stone.getNeighboors(board)
+	friends := []Stone{}
+
+	for _, liberty := range neighboors {
+		if stone.Color == liberty.Color {
+			friends = append(friends, liberty)
+		}
+	}
+
+	return friends
+}
+
 func buildEmptyBoard(size int) [][]int {
 	board := make([][]int, size)
 
@@ -105,19 +118,6 @@ func playGame(moves []Stone, board [][]int) [][]int {
 	return board
 }
 
-func findFriendsForStone(stone Stone, board [][]int) []Stone {
-	neighboors := stone.getNeighboors(board)
-	friends := []Stone{}
-
-	for _, liberty := range neighboors {
-		if stone.Color == liberty.Color {
-			friends = append(friends, liberty)
-		}
-	}
-
-	return friends
-}
-
 func isStoneInGroup(stone Stone, group []Stone) bool {
 	for _, element := range group {
 		if stone == element {
@@ -138,7 +138,7 @@ func makeGroupForStone(stone Stone, board [][]int) []Stone {
 	for len(toCheck) > 0 {
 		firstToCheck := toCheck[:1]
 
-		friends = findFriendsForStone(firstToCheck[0], board)
+		friends = firstToCheck[0].getFriends(board)
 		for _, friend := range friends {
 			if !isStoneInGroup(friend, group) {
 				group = append(group, friend)
