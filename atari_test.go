@@ -38,7 +38,7 @@ func TestPuttingStoneOnBoard(t *testing.T) {
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
-			//fmt.Println("\nTest putStoneOnBoard(stone, emptyBoard) function:")
+			//fmt.Println("\nTest putStoneOnBoard(emptyBoard) function:")
 			//fmt.Printf("stone: %v\nresult: %v\n", c.stone, c.want)
 		}
 	}
@@ -55,11 +55,11 @@ func TestPuttingStoneOnOtherStone(t *testing.T) {
 		{Stone{1, 1, 1}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, false},
 	}
 	for _, c := range cases {
-		got := assertIllegalMove(c.stone, c.inBoard)
+		got := c.stone.assertMovePossible(c.inBoard)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
-			//fmt.Println("\nTest putStoneOnBoard(stone, emptyBoard) function:")
+			//fmt.Println("\nTest assertMovePossible(emptyBoard) function:")
 			//fmt.Printf("board: %v\nstone: %v\nresult: %v\n", c.inBoard, c.stone, c.want)
 		}
 	}
