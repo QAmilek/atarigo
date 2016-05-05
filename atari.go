@@ -32,6 +32,25 @@ func (stone *Stone) putOnBoard(board [][]int) [][]int {
 	return board
 }
 
+func (stone *Stone) getNeighboors(board [][]int) []Stone {
+	liberties := []Stone{}
+
+	if limit := stone.Y; limit > 0 {
+		liberties = append(liberties, Stone{board[stone.X][stone.Y-1], stone.X, stone.Y - 1})
+	}
+	if limit := stone.Y; limit < cap(board)-1 {
+		liberties = append(liberties, Stone{board[stone.X][stone.Y+1], stone.X, stone.Y + 1})
+	}
+	if limit := stone.X; limit > 0 {
+		liberties = append(liberties, Stone{board[stone.X-1][stone.Y], stone.X - 1, stone.Y})
+	}
+	if limit := stone.X; limit < cap(board)-1 {
+		liberties = append(liberties, Stone{board[stone.X+1][stone.Y], stone.X + 1, stone.Y})
+	}
+
+	return liberties
+}
+
 func buildEmptyBoard(size int) [][]int {
 	board := make([][]int, size)
 
@@ -73,27 +92,8 @@ func playGame(moves []Stone, board [][]int) [][]int {
 	return board
 }
 
-func findNeighboors(stone Stone, board [][]int) []Stone {
-	liberties := []Stone{}
-
-	if limit := stone.Y; limit > 0 {
-		liberties = append(liberties, Stone{board[stone.X][stone.Y-1], stone.X, stone.Y - 1})
-	}
-	if limit := stone.Y; limit < cap(board)-1 {
-		liberties = append(liberties, Stone{board[stone.X][stone.Y+1], stone.X, stone.Y + 1})
-	}
-	if limit := stone.X; limit > 0 {
-		liberties = append(liberties, Stone{board[stone.X-1][stone.Y], stone.X - 1, stone.Y})
-	}
-	if limit := stone.X; limit < cap(board)-1 {
-		liberties = append(liberties, Stone{board[stone.X+1][stone.Y], stone.X + 1, stone.Y})
-	}
-
-	return liberties
-}
-
 func findOpponentForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
+	neighboors := stone.getNeighboors(board)
 	opponents := []Stone{}
 
 	for _, liberty := range neighboors {
@@ -106,7 +106,7 @@ func findOpponentForStone(stone Stone, board [][]int) []Stone {
 }
 
 func findFriendsForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
+	neighboors := stone.getNeighboors(board)
 	friends := []Stone{}
 
 	for _, liberty := range neighboors {
@@ -152,7 +152,7 @@ func makeGroupForStone(stone Stone, board [][]int) []Stone {
 }
 
 func findLibertiesForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
+	neighboors := stone.getNeighboors(board)
 	liberties := []Stone{}
 
 	for _, liberty := range neighboors {
