@@ -77,18 +77,7 @@ func (stone *Stone) getFriends(board [][]int) []Stone {
 	return friends
 }
 
-func buildEmptyBoard(size int) [][]int {
-	board := make([][]int, size)
-
-	for i := 0; i < size; i++ {
-		board[i] = make([]int, size)
-	}
-
-	return board
-}
-
-
-func assertIllegalMove(stone Stone, board [][]int) bool {
+func (stone *Stone) isMovePossible(board [][]int) bool {
 	if check := board[stone.X][stone.Y]; check == 0 {
 		return true
 	}
@@ -106,18 +95,6 @@ func assertIllegalMove(stone Stone, board [][]int) bool {
 	return true
 }
 
-func playGame(moves []Stone, board [][]int) [][]int {
-	for _, stone := range moves {
-		if assertIllegalMove(stone, board) {
-			stone.putOnBoard(board)
-		} else {
-			break
-		}
-	}
-
-	return board
-}
-
 func isStoneInGroup(stone Stone, group []Stone) bool {
 	for _, element := range group {
 		if stone == element {
@@ -126,6 +103,28 @@ func isStoneInGroup(stone Stone, group []Stone) bool {
 	}
 
 	return false
+}
+
+func buildEmptyBoard(size int) [][]int {
+	board := make([][]int, size)
+
+	for i := 0; i < size; i++ {
+		board[i] = make([]int, size)
+	}
+
+	return board
+}
+
+func playGame(moves []Stone, board [][]int) [][]int {
+	for _, stone := range moves {
+		if stone.isMovePossible(board) {
+			stone.putOnBoard(board)
+		} else {
+			break
+		}
+	}
+
+	return board
 }
 
 func makeGroupForStone(stone Stone, board [][]int) []Stone {
