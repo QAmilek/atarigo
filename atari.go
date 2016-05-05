@@ -51,6 +51,19 @@ func (stone *Stone) getNeighboors(board [][]int) []Stone {
 	return liberties
 }
 
+func (stone *Stone) getOpponents(board [][]int) []Stone {
+	neighboors := stone.getNeighboors(board)
+	opponents := []Stone{}
+
+	for _, liberty := range neighboors {
+		if liberty.Color != 0 && stone.Color != liberty.Color {
+			opponents = append(opponents, liberty)
+		}
+	}
+
+	return opponents
+}
+
 func buildEmptyBoard(size int) [][]int {
 	board := make([][]int, size)
 
@@ -90,19 +103,6 @@ func playGame(moves []Stone, board [][]int) [][]int {
 	}
 
 	return board
-}
-
-func findOpponentForStone(stone Stone, board [][]int) []Stone {
-	neighboors := stone.getNeighboors(board)
-	opponents := []Stone{}
-
-	for _, liberty := range neighboors {
-		if liberty.Color != 0 && stone.Color != liberty.Color {
-			opponents = append(opponents, liberty)
-		}
-	}
-
-	return opponents
 }
 
 func findFriendsForStone(stone Stone, board [][]int) []Stone {
