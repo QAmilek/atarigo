@@ -26,6 +26,12 @@ type Stone struct {
 	Y     int
 }
 
+func (stone *Stone) putOnBoard(board [][]int) [][]int {
+	board[stone.X][stone.Y] = stone.Color
+
+	return board
+}
+
 func buildEmptyBoard(size int) [][]int {
 	board := make([][]int, size)
 
@@ -36,11 +42,6 @@ func buildEmptyBoard(size int) [][]int {
 	return board
 }
 
-func putStoneOnBoard(stone Stone, board [][]int) [][]int {
-	board[stone.X][stone.Y] = stone.Color
-
-	return board
-}
 
 func assertIllegalMove(stone Stone, board [][]int) bool {
 	if check := board[stone.X][stone.Y]; check == 0 {
@@ -63,7 +64,7 @@ func assertIllegalMove(stone Stone, board [][]int) bool {
 func playGame(moves []Stone, board [][]int) [][]int {
 	for _, stone := range moves {
 		if assertIllegalMove(stone, board) {
-			putStoneOnBoard(stone, board)
+			stone.putOnBoard(board)
 		} else {
 			break
 		}
