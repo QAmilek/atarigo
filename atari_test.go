@@ -34,7 +34,7 @@ func TestPuttingStoneOnBoard(t *testing.T) {
 		{Stone{2, 1, 2}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
 	}
 	for _, c := range cases {
-		got := putStoneOnBoard(c.stone, c.inBoard)
+		got := c.stone.putOnBoard(c.inBoard)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {

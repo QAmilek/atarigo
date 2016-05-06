@@ -36,7 +36,7 @@ func buildEmptyBoard(size int) [][]int {
 	return board
 }
 
-func putStoneOnBoard(stone Stone, board [][]int) [][]int {
+func (stone *Stone) putOnBoard(board [][]int) [][]int {
 	board[stone.X][stone.Y] = stone.Color
 
 	return board
@@ -63,7 +63,7 @@ func assertIllegalMove(stone Stone, board [][]int) bool {
 func playGame(moves []Stone, board [][]int) [][]int {
 	for _, stone := range moves {
 		if assertIllegalMove(stone, board) {
-			putStoneOnBoard(stone, board)
+			stone.putOnBoard(board)
 		} else {
 			break
 		}
