@@ -55,7 +55,7 @@ func TestPuttingStoneOnOtherStone(t *testing.T) {
 		{Stone{1, 1, 1}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, false},
 	}
 	for _, c := range cases {
-		got := assertIllegalMove(c.stone, c.inBoard)
+		got := c.stone.isMovePossible(c.inBoard)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {

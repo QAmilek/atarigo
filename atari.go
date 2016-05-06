@@ -42,7 +42,7 @@ func (stone *Stone) putOnBoard(board [][]int) [][]int {
 	return board
 }
 
-func assertIllegalMove(stone Stone, board [][]int) bool {
+func (stone *Stone) isMovePossible(board [][]int) bool {
 	if check := board[stone.X][stone.Y]; check == 0 {
 		return true
 	}
@@ -62,7 +62,7 @@ func assertIllegalMove(stone Stone, board [][]int) bool {
 
 func playGame(moves []Stone, board [][]int) [][]int {
 	for _, stone := range moves {
-		if assertIllegalMove(stone, board) {
+		if stone.isMovePossible(board) {
 			stone.putOnBoard(board)
 		} else {
 			break
