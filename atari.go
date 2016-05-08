@@ -150,7 +150,7 @@ func makeGroupForStone(stone Stone, board [][]int) []Stone {
 	return group
 }
 
-func findLibertiesForStone(stone Stone, board [][]int) []Stone {
+func (stone *Stone) findLiberties(board [][]int) []Stone {
 	neighboors := stone.findNeighboors(board)
 	liberties := []Stone{}
 
@@ -168,7 +168,7 @@ func findLibertiesForGroup(group []Stone, board [][]int) []Stone {
 	stoneLiberties := []Stone{}
 
 	for _, stone := range group {
-		stoneLiberties = findLibertiesForStone(stone, board)
+		stoneLiberties = stone.findLiberties(board)
 		for _, liberty := range stoneLiberties {
 			if !liberty.isInGroup(groupLiberties) {
 				groupLiberties = append(groupLiberties, liberty)
@@ -180,7 +180,7 @@ func findLibertiesForGroup(group []Stone, board [][]int) []Stone {
 }
 
 func countStoneLiberties(stone Stone, board [][]int) int {
-	liberties := findLibertiesForStone(stone, board)
+	liberties := stone.findLiberties(board)
 
 	return len(liberties)
 }
