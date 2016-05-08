@@ -179,7 +179,7 @@ func findLibertiesForGroup(group []Stone, board [][]int) []Stone {
 	return groupLiberties
 }
 
-func countStoneLiberties(stone Stone, board [][]int) int {
+func (stone *Stone) countLiberties(board [][]int) int {
 	liberties := stone.findLiberties(board)
 
 	return len(liberties)
