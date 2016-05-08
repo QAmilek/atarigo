@@ -43,17 +43,9 @@ func (stone *Stone) putOnBoard(board [][]int) [][]int {
 }
 
 func (stone *Stone) isMovePossible(board [][]int) bool {
-	if check := board[stone.X][stone.Y]; check == 0 {
-		return true
-	}
+	placeOnBoard := board[stone.X][stone.Y]
 
-	if check := board[stone.X][stone.Y]; check == stone.Color {
-		//fmt.Println("Your stone is already there")
-		return false
-	}
-
-	if check := board[stone.X][stone.Y]; check != stone.Color {
-		//fmt.Println("This place is occupied by your opponent stone")
+	if placeOnBoard != 0 {
 		return false
 	}
 
