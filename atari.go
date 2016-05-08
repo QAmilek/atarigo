@@ -67,16 +67,16 @@ func playGame(moves []Stone, board [][]int) [][]int {
 func (stone *Stone) findNeighboors(board [][]int) []Stone {
 	liberties := []Stone{}
 
-	if limit := stone.Y; limit > 0 {
+	if stone.Y > 0 {
 		liberties = append(liberties, Stone{board[stone.X][stone.Y-1], stone.X, stone.Y - 1})
 	}
-	if limit := stone.Y; limit < cap(board)-1 {
+	if stone.Y < len(board) - 1 {
 		liberties = append(liberties, Stone{board[stone.X][stone.Y+1], stone.X, stone.Y + 1})
 	}
-	if limit := stone.X; limit > 0 {
+	if stone.X > 0 {
 		liberties = append(liberties, Stone{board[stone.X-1][stone.Y], stone.X - 1, stone.Y})
 	}
-	if limit := stone.X; limit < cap(board)-1 {
+	if stone.X < len(board) - 1 {
 		liberties = append(liberties, Stone{board[stone.X+1][stone.Y], stone.X + 1, stone.Y})
 	}
 
