@@ -127,12 +127,12 @@ func (stone *Stone) equalTo(otherStone Stone) bool {
 	return false
 }
 
-func makeGroupForStone(stone Stone, board [][]int) []Stone {
+func (stone *Stone) makeGroup(board [][]int) []Stone {
 	group := []Stone{}
 	toCheck := []Stone{}
 	friends := []Stone{}
-	group = append(group, stone)
-	toCheck = append(toCheck, stone)
+	group = append(group, Stone{stone.Color, stone.X, stone.Y})
+	toCheck = append(toCheck, Stone{stone.Color, stone.X, stone.Y})
 
 	for len(toCheck) > 0 {
 		firstToCheck := toCheck[:1]
