@@ -83,7 +83,7 @@ func (stone *Stone) findNeighboors(board [][]int) []Stone {
 	return liberties
 }
 
-func findOpponentForStone(stone Stone, board [][]int) []Stone {
+func (stone *Stone) findOpponents(board [][]int) []Stone {
 	neighboors := stone.findNeighboors(board)
 	opponents := []Stone{}
 

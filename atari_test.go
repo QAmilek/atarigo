@@ -139,7 +139,7 @@ func TestFindingOpponentForStone(t *testing.T) {
 		{Stone{2, 1, 1}, [][]int{[]int{0, 1, 0}, []int{1, 2, 1}, []int{1, 1, 0}}, []Stone{{1, 1, 0}, {1, 1, 2}, {1, 0, 1}, {1, 2, 1}}},
 	}
 	for _, c := range cases {
-		got := findOpponentForStone(c.stone, c.inBoard)
+		got := c.stone.findOpponents(c.inBoard)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
