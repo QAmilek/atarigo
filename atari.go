@@ -96,7 +96,7 @@ func (stone *Stone) findOpponents(board [][]int) []Stone {
 	return opponents
 }
 
-func findFriendsForStone(stone Stone, board [][]int) []Stone {
+func (stone *Stone) findFriends(board [][]int) []Stone {
 	neighboors := stone.findNeighboors(board)
 	friends := []Stone{}
 
@@ -129,7 +129,7 @@ func makeGroupForStone(stone Stone, board [][]int) []Stone {
 	for len(toCheck) > 0 {
 		firstToCheck := toCheck[:1]
 
-		friends = findFriendsForStone(firstToCheck[0], board)
+		friends = firstToCheck[0].findFriends(board)
 		for _, friend := range friends {
 			if !isStoneInGroup(friend, group) {
 				group = append(group, friend)

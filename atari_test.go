@@ -159,7 +159,7 @@ func TestFindingFriendsForStone(t *testing.T) {
 		{Stone{2, 1, 1}, [][]int{[]int{0, 2, 0}, []int{1, 2, 1}, []int{0, 1, 0}}, []Stone{{2, 0, 1}}},
 	}
 	for _, c := range cases {
-		got := findFriendsForStone(c.stone, c.inBoard)
+		got := c.stone.findFriends(c.inBoard)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
