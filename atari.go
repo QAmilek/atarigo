@@ -109,11 +109,19 @@ func (stone *Stone) findFriends(board [][]int) []Stone {
 	return friends
 }
 
-func isStoneInGroup(stone Stone, group []Stone) bool {
+func (stone *Stone) isInGroup(group []Stone) bool {
 	for _, element := range group {
-		if stone == element {
+		if stone.equalTo(element) {
 			return true
 		}
+	}
+
+	return false
+}
+
+func (stone *Stone) equalTo(otherStone Stone) bool {
+	if stone.X == otherStone.X && stone.Y == otherStone.Y && stone.Color == otherStone.Color {
+		return true
 	}
 
 	return false
@@ -131,7 +139,7 @@ func makeGroupForStone(stone Stone, board [][]int) []Stone {
 
 		friends = firstToCheck[0].findFriends(board)
 		for _, friend := range friends {
-			if !isStoneInGroup(friend, group) {
+			if !friend.isInGroup(group) {
 				group = append(group, friend)
 				toCheck = append(toCheck, friend)
 			}
@@ -162,7 +170,7 @@ func findLibertiesForGroup(group []Stone, board [][]int) []Stone {
 	for _, stone := range group {
 		stoneLiberties = findLibertiesForStone(stone, board)
 		for _, liberty := range stoneLiberties {
-			if !isStoneInGroup(liberty, groupLiberties) {
+			if !liberty.isInGroup(groupLiberties) {
 				groupLiberties = append(groupLiberties, liberty)
 			}
 		}

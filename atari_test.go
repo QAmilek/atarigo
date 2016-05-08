@@ -180,7 +180,7 @@ func TestStoneInGroup(t *testing.T) {
 		{Stone{2, 1, 1}, []Stone{{1, 1, 1}, {2, 0, 1}}, false},
 	}
 	for _, c := range cases {
-		got := isStoneInGroup(c.stone, c.group)
+		got := c.stone.isInGroup(c.group)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
