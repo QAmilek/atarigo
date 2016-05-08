@@ -64,7 +64,7 @@ func playGame(moves []Stone, board [][]int) [][]int {
 	return board
 }
 
-func findNeighboors(stone Stone, board [][]int) []Stone {
+func (stone *Stone) findNeighboors(board [][]int) []Stone {
 	liberties := []Stone{}
 
 	if limit := stone.Y; limit > 0 {
@@ -84,7 +84,7 @@ func findNeighboors(stone Stone, board [][]int) []Stone {
 }
 
 func findOpponentForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
+	neighboors := stone.findNeighboors(board)
 	opponents := []Stone{}
 
 	for _, liberty := range neighboors {
@@ -97,7 +97,7 @@ func findOpponentForStone(stone Stone, board [][]int) []Stone {
 }
 
 func findFriendsForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
+	neighboors := stone.findNeighboors(board)
 	friends := []Stone{}
 
 	for _, liberty := range neighboors {
@@ -143,7 +143,7 @@ func makeGroupForStone(stone Stone, board [][]int) []Stone {
 }
 
 func findLibertiesForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
+	neighboors := stone.findNeighboors(board)
 	liberties := []Stone{}
 
 	for _, liberty := range neighboors {
