@@ -24,55 +24,14 @@ func TestBuildingEmptyBoard(t *testing.T) {
 	}
 }
 
-func TestPuttingStoneOnBoard(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		inBoard [][]int
-		want [][]int
-	}{
-		{Stone{1, 1, 1}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}},
-		{Stone{2, 1, 2}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
-	}
-	for _, c := range cases {
-		got := c.stone.putOnBoard(c.inBoard)
-		if !reflect.DeepEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//fmt.Println("\nTest putStoneOnBoard(stone, emptyBoard) function:")
-			//fmt.Printf("stone: %v\nresult: %v\n", c.stone, c.want)
-		}
-	}
-}
-
-func TestPuttingStoneOnOtherStone(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		inBoard [][]int
-		want bool
-	}{
-		{Stone{2, 1, 1}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, false},
-		{Stone{2, 1, 2}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, true},
-		{Stone{1, 1, 1}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, false},
-	}
-	for _, c := range cases {
-		got := c.stone.isMovePossible(c.inBoard)
-		if !reflect.DeepEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//fmt.Println("\nTest putStoneOnBoard(stone, emptyBoard) function:")
-			//fmt.Printf("board: %v\nstone: %v\nresult: %v\n", c.inBoard, c.stone, c.want)
-		}
-	}
-}
-
 func TestPlayingGame(t *testing.T) {
 	cases := []struct {
-		stones []Stone
+		stones Stones
 		inBoard [][]int
 		want [][]int
 	}{
-		{[]Stone{{1, 1, 1}, {2, 1, 2}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
-		{[]Stone{{2, 1, 1}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 2, 0}, []int{0, 0, 0}}},
+		{Stones{{1, 1, 1}, {2, 1, 2}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
+		{Stones{{2, 1, 1}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 2, 0}, []int{0, 0, 0}}},
 	}
 	for _, c := range cases {
 		got := playGame(c.stones, c.inBoard)
@@ -87,12 +46,12 @@ func TestPlayingGame(t *testing.T) {
 
 func TestPlayingGameWithIllegalMove(t *testing.T) {
 	cases := []struct {
-		stones []Stone
+		stones Stones
 		inBoard [][]int
 		want [][]int
 	}{
-		{[]Stone{{1, 1, 1}, {2, 1, 2}, {1, 1, 2}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
-		{[]Stone{{1, 1, 1}, {2, 1, 2}, {1, 1, 1}, {2, 2, 2}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
+		{Stones{{1, 1, 1}, {2, 1, 2}, {1, 1, 2}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
+		{Stones{{1, 1, 1}, {2, 1, 2}, {1, 1, 1}, {2, 2, 2}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
 	}
 	for _, c := range cases {
 		got := playGame(c.stones, c.inBoard)
@@ -105,169 +64,40 @@ func TestPlayingGameWithIllegalMove(t *testing.T) {
 	}
 }
 
-func TestFindNeighboors(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		inBoard [][]int
-		want []Stone
-	}{
-		{Stone{1, 1, 1}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, []Stone{{0, 1, 0}, {0, 1, 2}, {0, 0, 1} ,{0, 2, 1}}},
-		{Stone{1, 0, 0}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, []Stone{{0, 0, 1}, {0, 1, 0}}},
-		{Stone{1, 2, 2}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, []Stone{{0, 2, 1}, {0, 1, 2}}},
-		{Stone{1, 0, 2}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, []Stone{{0, 0, 1}, {0, 1, 2}}},
-		{Stone{1, 2, 0}, [][]int{[]int{0, 0, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, []Stone{{0, 2, 1}, {0, 1, 0}}},
-		{Stone{1, 1, 1}, [][]int{[]int{0, 2, 0}, []int{2, 1, 2}, []int{0, 2, 0}}, []Stone{{2, 1, 0}, {2, 1, 2}, {2, 0, 1}, {2, 2, 1}}},
-	}
-	for _, c := range cases {
-		got := c.stone.findNeighboors(c.inBoard)
-		if !reflect.DeepEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//fmt.Println("\nTest findNeighboors(stone, emptyBoard) function:")
-			//fmt.Printf("stone: %v\nresult: %v\n", c.stone, c.want)
-		}
-	}
-}
-
-func TestFindingOpponentForStone(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		inBoard [][]int
-		want []Stone
-	}{
-		{Stone{1, 1, 1}, [][]int{[]int{0, 2, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, []Stone{{2, 0, 1}}},
-		{Stone{2, 1, 1}, [][]int{[]int{0, 1, 0}, []int{1, 2, 1}, []int{1, 1, 0}}, []Stone{{1, 1, 0}, {1, 1, 2}, {1, 0, 1}, {1, 2, 1}}},
-	}
-	for _, c := range cases {
-		got := c.stone.findOpponents(c.inBoard)
-		if !reflect.DeepEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//fmt.Println("\nTest findOpponentForStone(stone, emptyBoard) function:")
-			//fmt.Printf("stones: %v\nresult: %v\n", c.stone, c.want)
-		}
-	}
-}
-
-func TestFindingFriendsForStone(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		inBoard [][]int
-		want []Stone
-	}{
-		{Stone{1, 1, 1}, [][]int{[]int{0, 2, 0}, []int{1, 1, 1}, []int{0, 0, 0}}, []Stone{{1, 1, 0}, {1, 1, 2}}},
-		{Stone{2, 1, 1}, [][]int{[]int{0, 2, 0}, []int{1, 2, 1}, []int{0, 1, 0}}, []Stone{{2, 0, 1}}},
-	}
-	for _, c := range cases {
-		got := c.stone.findFriends(c.inBoard)
-		if !reflect.DeepEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//fmt.Println("\nTest findFriendsForStone(stone, emptyBoard) function:")
-			//fmt.Printf("stones: %v\nresult: %v\n", c.stone, c.want)
-		}
-	}
-}
-
-func TestStoneInGroup(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		group []Stone
-		want bool
-	}{
-		{Stone{1, 1, 1}, []Stone{{1, 1, 1}, {1, 1, 0}}, true},
-		{Stone{1, 1, 1}, []Stone{{1, 1, 0}, {1, 1, 1}}, true},
-		{Stone{2, 1, 1}, []Stone{{1, 1, 1}, {2, 0, 1}}, false},
-	}
-	for _, c := range cases {
-		got := c.stone.isInGroup(c.group)
-		if !reflect.DeepEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//			fmt.Println("\nTest isStoneInGroup(stone, emptyBoard) function:")
-			//			fmt.Printf("stones: %v\nresult: %v\n", c.stone, c.want)
-		}
-	}
-}
-
-func TestMakingGroupForStone(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		inBoard [][]int
-		want []Stone
-	}{
-		{Stone{1, 1, 1}, [][]int{[]int{0, 2, 0}, []int{1, 1, 0}, []int{0, 0, 0}}, []Stone{{1, 1, 1}, {1, 1, 0}}},
-		{Stone{2, 1, 1}, [][]int{[]int{0, 2, 0}, []int{1, 2, 1}, []int{0, 1, 0}}, []Stone{{2, 1, 1}, {2, 0, 1}}},
-		{Stone{2, 1, 1}, [][]int{[]int{0, 2, 0}, []int{1, 2, 1}, []int{0, 2, 0}}, []Stone{{2, 1, 1}, {2, 0, 1}, {2, 2, 1}}},
-		{Stone{2, 2, 1}, [][]int{[]int{0, 2, 0}, []int{1, 2, 1}, []int{0, 2, 0}}, []Stone{{2, 1, 1}, {2, 0, 1}, {2, 2, 1}}},
-		{Stone{2, 2, 1}, [][]int{[]int{2, 2, 2}, []int{2, 2, 2}, []int{0, 2, 0}}, []Stone{{2, 1, 1}, {2, 0, 1}, {2, 2, 1}, {2, 0, 2}, {2, 0, 0}, {2, 1, 2}, {2, 1, 0}}},
-	}
-	for _, c := range cases {
-		got := makeGroupForStone(c.stone, c.inBoard)
-		if !assertStonesSlicesEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//			fmt.Println("\nTest makeGroupForStone(stone, emptyBoard) function:")
-			//			fmt.Printf("stones: %v\nresult: %v\n", c.stone, c.want)
-		}
-	}
-}
-
-func TestCountingStoneLiberties(t *testing.T) {
-	cases := []struct {
-		stone Stone
-		board [][]int
-		want int
-	}{
-		{Stone{1, 1, 1}, [][]int{[]int{0, 2, 0}, []int{2, 1, 0}, []int{0, 0, 0}}, 2},
-		{Stone{1, 1, 1}, [][]int{[]int{0, 2, 0}, []int{2, 1, 0}, []int{0, 2, 0}}, 1},
-		{Stone{1, 1, 1}, [][]int{[]int{0, 2, 0}, []int{2, 1, 0}, []int{0, 1, 0}}, 1},
-	}
-	for _, c := range cases {
-		got := c.stone.countLiberties(c.board)
-		if !reflect.DeepEqual(got, c.want) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
-		} else {
-			//			fmt.Println("\nTest countStoneLiberties(stone, board):")
-			//			fmt.Printf("result: %v\n", c.want)
-		}
-	}
-}
-
 func TestCountingGroupLiberties(t *testing.T) {
 	cases := []struct {
-		group []Stone
+		group Stones
 		board [][]int
 		want int
 	}{
-		{[]Stone{{1, 1, 1}}, [][]int{[]int{0, 2, 0}, []int{2, 1, 0}, []int{0, 2, 0}}, 1},
-		{[]Stone{{1, 1, 1}, {1, 1, 0}}, [][]int{[]int{0, 1, 0}, []int{2, 1, 0}, []int{0, 2, 0}}, 3},
-		{[]Stone{{1, 1, 1}, {1, 1, 0}}, [][]int{[]int{0, 1, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, 5},
-		{[]Stone{{1, 0, 0}, {1, 0, 1}, {1, 0, 2}, {1, 1, 0}, {1, 1, 2}, {1, 2, 0}, {1, 2, 1}, {1, 2, 2}}, [][]int{[]int{1, 1, 1}, []int{1, 0, 1}, []int{1, 1, 1}}, 1},
+		{Stones{{1, 1, 1}}, [][]int{[]int{0, 2, 0}, []int{2, 1, 0}, []int{0, 2, 0}}, 1},
+		{Stones{{1, 1, 1}, {1, 1, 0}}, [][]int{[]int{0, 1, 0}, []int{2, 1, 0}, []int{0, 2, 0}}, 3},
+		{Stones{{1, 1, 1}, {1, 1, 0}}, [][]int{[]int{0, 1, 0}, []int{0, 1, 0}, []int{0, 0, 0}}, 5},
+		{Stones{{1, 0, 0}, {1, 0, 1}, {1, 0, 2}, {1, 1, 0}, {1, 1, 2}, {1, 2, 0}, {1, 2, 1}, {1, 2, 2}}, [][]int{[]int{1, 1, 1}, []int{1, 0, 1}, []int{1, 1, 1}}, 1},
 	}
 	for _, c := range cases {
 		got := countGroupLiberties(c.group, c.board)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
-			//			fmt.Println("\nTest countGroupLiberties(group, board):")
-			//			fmt.Printf("result: %v\n", c.want)
+			//fmt.Println("\nTest countGroupLiberties(group, board):")
+			//fmt.Printf("result: %v\n", c.want)
 		}
 	}
 }
 
 func TestGroupIsAlive(t *testing.T) {
 	cases := []struct {
-		group []Stone
+		group Stones
 		board [][]int
 		want bool
 	}{
-		{[]Stone{{1, 1, 1}}, [][]int{[]int{0, 2, 0}, []int{2, 1, 2}, []int{0, 2, 0}}, false},
-		{[]Stone{{1, 1, 1}}, [][]int{[]int{0, 0, 0}, []int{2, 1, 2}, []int{0, 2, 0}}, true},
-		{[]Stone{{1, 1, 1}, {1, 0, 1}}, [][]int{[]int{2, 1, 2}, []int{2, 1, 2}, []int{0, 0, 0}}, true},
-		{[]Stone{{1, 1, 1}, {1, 0, 1}}, [][]int{[]int{2, 1, 2}, []int{2, 1, 2}, []int{0, 2, 0}}, false},
-		{[]Stone{{1, 0, 0}, {1, 0, 1}, {1, 0, 2}, {1, 1, 0}, {1, 1, 2}, {1, 2, 0}, {1, 2, 1}, {1, 2, 2}}, [][]int{[]int{1, 1, 1}, []int{1, 0, 1}, []int{1, 1, 1}}, true},
-		{[]Stone{{1, 0, 0}, {1, 0, 1}, {1, 0, 2}, {1, 1, 0}, {1, 1, 2}, {1, 2, 0}, {1, 2, 1}, {1, 2, 2}}, [][]int{[]int{1, 1, 1}, []int{1, 2, 1}, []int{1, 1, 1}}, false},
+		{Stones{{1, 1, 1}}, [][]int{[]int{0, 2, 0}, []int{2, 1, 2}, []int{0, 2, 0}}, false},
+		{Stones{{1, 1, 1}}, [][]int{[]int{0, 0, 0}, []int{2, 1, 2}, []int{0, 2, 0}}, true},
+		{Stones{{1, 1, 1}, {1, 0, 1}}, [][]int{[]int{2, 1, 2}, []int{2, 1, 2}, []int{0, 0, 0}}, true},
+		{Stones{{1, 1, 1}, {1, 0, 1}}, [][]int{[]int{2, 1, 2}, []int{2, 1, 2}, []int{0, 2, 0}}, false},
+		{Stones{{1, 0, 0}, {1, 0, 1}, {1, 0, 2}, {1, 1, 0}, {1, 1, 2}, {1, 2, 0}, {1, 2, 1}, {1, 2, 2}}, [][]int{[]int{1, 1, 1}, []int{1, 0, 1}, []int{1, 1, 1}}, true},
+		{Stones{{1, 0, 0}, {1, 0, 1}, {1, 0, 2}, {1, 1, 0}, {1, 1, 2}, {1, 2, 0}, {1, 2, 1}, {1, 2, 2}}, [][]int{[]int{1, 1, 1}, []int{1, 2, 1}, []int{1, 1, 1}}, false},
 	}
 	for _, c := range cases {
 		got := isGroupAlive(c.group, c.board)
@@ -277,8 +107,8 @@ func TestGroupIsAlive(t *testing.T) {
 
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
-			//			fmt.Println("\nTest isGroupAlive(group, board):")
-			//			fmt.Printf("result: %v\n", c.want)
+			//fmt.Println("\nTest isGroupAlive(group, board):")
+			//fmt.Printf("result: %v\n", c.want)
 		}
 	}
 }
@@ -295,28 +125,7 @@ func TestGettingMovesPartOfGameRecordAsArray(t *testing.T) {
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
-			//			fmt.Printf("Game record: %v\nMoves: %v\n", c.gameRecord, c.want)
-		}
-	}
-}
-
-func TestTransformingRecordedMoveToStoneStruct(t *testing.T) {
-	cases := []struct {
-		recordedMove string
-		stone Stone
-	}{
-		{"B[bb]", Stone{1, 1, 1}},
-		{"W[ab]", Stone{2, 0, 1}},
-		{"B[aa]", Stone{1, 0, 0}},
-		{"W[ba]", Stone{2, 1, 0}},
-		{"B[cc]", Stone{1, 2, 2}},
-	}
-	for _, c := range cases {
-		got := transformMoveToStone(c.recordedMove)
-		if !reflect.DeepEqual(got, c.stone) {
-			t.Errorf("\nWant: %v\nGot:  %v\n", c.stone, got)
-		} else {
-			//			fmt.Printf("Transform %v => %v\n", c.recordedMove, c.stone)
+			//fmt.Printf("Game record: %v\nMoves: %v\n", c.gameRecord, c.want)
 		}
 	}
 }
@@ -324,9 +133,9 @@ func TestTransformingRecordedMoveToStoneStruct(t *testing.T) {
 func TestTransformingMovesToStones(t *testing.T) {
 	cases := []struct {
 		moves []string
-		stones []Stone
+		stones Stones
 	}{
-		{[]string{"B[bb]", "W[ab]", "B[aa]", "W[ba]"}, []Stone{{1, 1, 1}, {2, 0, 1}, {1, 0, 0}, {2, 1, 0}}},
+		{[]string{"B[bb]", "W[ab]", "B[aa]", "W[ba]"}, Stones{{1, 1, 1}, {2, 0, 1}, {1, 0, 0}, {2, 1, 0}}},
 	}
 	for _, c := range cases {
 		got := transformMovesToStones(c.moves)
@@ -339,9 +148,9 @@ func TestTransformingMovesToStones(t *testing.T) {
 func TestGettingMovesFromGameRecord(t *testing.T) {
 	cases := []struct {
 		gameRecord string
-		want []Stone
+		want Stones
 	}{
-		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab];B[aa];W[ba])", []Stone{{1, 1, 1}, {2, 0, 1}, {1, 0, 0}, {2, 1, 0}}},
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab];B[aa];W[ba])", Stones{{1, 1, 1}, {2, 0, 1}, {1, 0, 0}, {2, 1, 0}}},
 	}
 	for _, c := range cases {
 		got := getMovesFromGameRecord(c.gameRecord)
@@ -367,28 +176,4 @@ func TestWritingGameOnBoard(t *testing.T) {
 			printBoardToConsole(got)
 		}
 	}
-}
-
-func assertStonesSlicesEqual(first, second []Stone) bool {
-	var result bool
-	if len(first) != len(second) {
-		return false
-	}
-
-	for len(first) > 0 {
-		firstElement := first[:1]
-		var isInArray bool = false
-		for _, secondElement := range second {
-			if firstElement[0] == secondElement {
-				isInArray = true
-				result = true
-				continue
-			}
-		}
-		if isInArray == false {
-			result = false
-		}
-		first = first[1:]
-	}
-	return result
 }
