@@ -130,6 +130,25 @@ func TestGettingMovesPartOfGameRecordAsArray(t *testing.T) {
 	}
 }
 
+func TestGetBoardSizeFromRecord(t *testing.T) {
+	cases := []struct {
+		gameRecord string
+		boardSize int
+	}{
+		{"(;SZ[3]PB[PlayerA]PW[PlayerB]RE[];B[bb];W[aa])", 3},
+		{"(;SZ[9]PB[PlayerA]PW[PlayerB]RE[];B[bb];W[aa])", 9},
+		{"(;SZ[19]PB[PlayerA]PW[PlayerB]RE[];B[bb];W[aa])", 19},
+	}
+	for _, c := range cases {
+		got := getBoardSizeFromRecord(c.gameRecord)
+		if !reflect.DeepEqual(got, c.boardSize) {
+			t.Errorf("\nWant: %v\nGot:  %v\n", c.boardSize, got)
+		} else {
+			fmt.Printf("\nGame record: %v\nBoard size: %v\n", c.gameRecord, c.boardSize)
+		}
+	}
+}
+
 func TestTransformingMovesToStones(t *testing.T) {
 	cases := []struct {
 		moves []string

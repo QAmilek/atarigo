@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"github.com/QAmilek/atarigo/stone"
+	"regexp"
+	"strconv"
 )
 
 func main() {
@@ -82,6 +84,14 @@ func getMovesPartOfGameRecordAsArray(record string) []string {
 	movesArray := recordArray[1:]
 
 	return movesArray
+}
+
+func getBoardSizeFromRecord(record string) int {
+	r := regexp.MustCompile(`SZ\[(?P<size>\d+)\]`)
+	result := r.FindStringSubmatch(record)
+	size, _ := strconv.Atoi(result[1])
+
+	return size
 }
 
 func transformMovesToStones(moves []string) Stones {
