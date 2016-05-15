@@ -24,7 +24,7 @@ func TestBuildingEmptyBoard(t *testing.T) {
 	}
 }
 
-func TestPlayingGame(t *testing.T) {
+func TestPutStonesOnBoard(t *testing.T) {
 	cases := []struct {
 		stones Stones
 		inBoard [][]int
@@ -196,4 +196,61 @@ func TestWritingGameOnBoard(t *testing.T) {
 			printBoardToConsole(got)
 		}
 	}
+}
+
+func TestGetEmptyBoardFromRecord(t *testing.T) {
+	cases := []struct {
+		gameRecord string
+		board [][]int
+	}{
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab];B[aa];W[ba])", [][]int{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}},
+		{"(;SZ[2]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab];B[aa];W[ba])", [][]int{{0, 0}, {0, 0}}},
+	}
+	for _, c := range cases {
+		got := getEmptyBoardFromRecord(c.gameRecord)
+		if !reflect.DeepEqual(got, c.board) {
+			t.Error("\nWant: %v\nGot:  %v\n", c.board, got)
+		}
+	}
+}
+
+func TestMarkingDeadGroup(t *testing.T) {
+       cases := []struct {
+               group Stones
+               board [][]int
+               result [][]int
+       }{
+               {Stones{{1, 1, 1}}, [][]int{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, [][]int{{0, 0, 0}, {0, 3, 0}, {0, 0, 0}}},
+               {Stones{{2, 1, 1}, {2, 1, 0}}, [][]int{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, [][]int{{0, 0, 0}, {4, 4, 0}, {0, 0, 0}}},
+       }
+       for _, c := range cases {
+               got := markDeadGroup(c.group, c.board)
+               if !reflect.DeepEqual(got, c.result) {
+                       t.Errorf("\nWant: %v\nGot:  %v\n", c.result, got)
+               } else {
+                       printBoardToConsole(got)
+               }
+       }
+}
+
+func TestPlayingGame(t *testing.T) {
+       cases := []struct {
+               gameRecord string
+               information string
+       }{
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[];B[bb])", "W to play"},
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab])", "B to play"},
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab];B[aa];W[ba])", "W won"},
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb])", "White to play"},
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab])", "Black to play"},
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab];B[aa];W[ba])", "White won"},
+		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+2];B[aa];W[ab];B[ba];W[bb];B[cb];W[ca])", "White won"},
+		{"(;SZ[8]PB[Jun]PW[Kamil]RE[W];B[gb];W[cg];B[cc];W[gf];B[eg];W[ef];B[fg];W[ff];B[gg];W[hg];B[dg];W[df];B[dh];W[ec];B[cf];W[bg];B[bf];W[af];B[bd];W[ch];B[ae];W[ag];B[gh];W[fb];B[gc];W[ga];B[ge];W[he];B[hd];W[hf];B[fe];W[ee];B[fc];W[db];B[fd];W[ed];B[hb];W[ce];B[be];W[bb];B[cb];W[ca];B[cd];W[de];B[bc];W[ac];B[dc];W[dd])", "Black to play"},
+        }
+       for _, c := range cases {
+               got := playGame(c.gameRecord)
+               if !reflect.DeepEqual(got, c.information) {
+                       t.Errorf("\nWant: %v\nGot:  %v\n", c.information, got)
+                }
+        }
 }

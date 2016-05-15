@@ -107,7 +107,7 @@ func (stone *Stone) equalTo(otherStone Stone) bool {
 	return false
 }
 
-func (stone *Stone) makeGroup(board [][]int) []Stone {
+func (stone *Stone) MakeGroup(board [][]int) []Stone {
 	group := []Stone{}
 	toCheck := []Stone{}
 	friends := []Stone{}

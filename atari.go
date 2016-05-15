@@ -114,8 +114,59 @@ func getMovesFromGameRecord(record string) Stones {
 }
 
 func writeGameOnBoard(record string) [][]int {
-	size := getBoardSizeFromRecord(record)
-	board := buildEmptyBoard(size)
+	board := getEmptyBoardFromRecord(record)
+	moves := getMovesFromGameRecord(record)
 
-	return putStonesOnBoard(getMovesFromGameRecord(record), board)
+	return putStonesOnBoard(moves, board)
+}
+
+func getEmptyBoardFromRecord(record string) [][]int {
+	size := getBoardSizeFromRecord(record)
+
+	return buildEmptyBoard(size)
+}
+
+func markDeadGroup(group Stones, board [][]int) [][]int {
+       for _, stone := range group {
+               board[stone.X][stone.Y] = stone.Color + 2
+       }
+
+       return board
+}
+
+func playGame(record string) string {
+       board := getEmptyBoardFromRecord(record)
+       result := ""
+       moves := getMovesFromGameRecord(record)
+
+       for _, move := range moves {
+               board = move.PutOnBoard(board)
+               if move.Color == 1 {
+                       result = "White to play"
+               } else {
+                       result = "Black to play"
+               }
+
+               opponents := move.FindOpponents(board)
+               if len(opponents) == 0 {
+                       continue
+               }
+
+               for _, opponent := range opponents {
+                       group := opponent.MakeGroup(board)
+                       groupStatus := isGroupAlive(group, board)
+
+                       if !groupStatus && move.Color == 1 {
+                               board = markDeadGroup(group, board)
+                               return "Black won"
+                       }
+
+                       if !groupStatus && move.Color == 2 {
+                               board = markDeadGroup(group, board)
+                               return "White won"
+                       }
+               }
+       }
+       // printBoardToConsole(board)
+       return result
 }
