@@ -3,28 +3,16 @@ package main
 import (
 	"fmt"
 	"strings"
+	"github.com/QAmilek/atarigo/stone"
+	"regexp"
+	"strconv"
 )
 
 func main() {
 	fmt.Println("Start testing\n")
 }
 
-var stoneColors = map[string]int{
-	"B": 1,
-	"W": 2,
-}
-
-var coordinates = map[string]int{
-	"a": 0,
-	"b": 1,
-	"c": 2,
-}
-
-type Stone struct {
-	Color int
-	X     int
-	Y     int
-}
+type Stones []stone.Stone
 
 func buildEmptyBoard(size int) [][]int {
 	board := make([][]int, size)
@@ -36,34 +24,10 @@ func buildEmptyBoard(size int) [][]int {
 	return board
 }
 
-func putStoneOnBoard(stone Stone, board [][]int) [][]int {
-	board[stone.X][stone.Y] = stone.Color
-
-	return board
-}
-
-func assertIllegalMove(stone Stone, board [][]int) bool {
-	if check := board[stone.X][stone.Y]; check == 0 {
-		return true
-	}
-
-	if check := board[stone.X][stone.Y]; check == stone.Color {
-		//fmt.Println("Your stone is already there")
-		return false
-	}
-
-	if check := board[stone.X][stone.Y]; check != stone.Color {
-		//fmt.Println("This place is occupied by your opponent stone")
-		return false
-	}
-
-	return true
-}
-
-func playGame(moves []Stone, board [][]int) [][]int {
-	for _, stone := range moves {
-		if assertIllegalMove(stone, board) {
-			putStoneOnBoard(stone, board)
+func playGame(moves Stones, board [][]int) [][]int {
+	for _, s := range moves {
+		if s.IsMovePossible(board) {
+			s.PutOnBoard(board)
 		} else {
 			break
 		}
@@ -72,105 +36,14 @@ func playGame(moves []Stone, board [][]int) [][]int {
 	return board
 }
 
-func findNeighboors(stone Stone, board [][]int) []Stone {
-	liberties := []Stone{}
+func findLibertiesForGroup(group Stones, board [][]int) Stones {
+	groupLiberties := Stones{}
+	stoneLiberties := Stones{}
 
-	if limit := stone.Y; limit > 0 {
-		liberties = append(liberties, Stone{board[stone.X][stone.Y-1], stone.X, stone.Y - 1})
-	}
-	if limit := stone.Y; limit < cap(board)-1 {
-		liberties = append(liberties, Stone{board[stone.X][stone.Y+1], stone.X, stone.Y + 1})
-	}
-	if limit := stone.X; limit > 0 {
-		liberties = append(liberties, Stone{board[stone.X-1][stone.Y], stone.X - 1, stone.Y})
-	}
-	if limit := stone.X; limit < cap(board)-1 {
-		liberties = append(liberties, Stone{board[stone.X+1][stone.Y], stone.X + 1, stone.Y})
-	}
-
-	return liberties
-}
-
-func findOpponentForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
-	opponents := []Stone{}
-
-	for _, liberty := range neighboors {
-		if liberty.Color != 0 && stone.Color != liberty.Color {
-			opponents = append(opponents, liberty)
-		}
-	}
-
-	return opponents
-}
-
-func findFriendsForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
-	friends := []Stone{}
-
-	for _, liberty := range neighboors {
-		if stone.Color == liberty.Color {
-			friends = append(friends, liberty)
-		}
-	}
-
-	return friends
-}
-
-func isStoneInGroup(stone Stone, group []Stone) bool {
-	for _, element := range group {
-		if stone == element {
-			return true
-		}
-	}
-
-	return false
-}
-
-func makeGroupForStone(stone Stone, board [][]int) []Stone {
-	group := []Stone{}
-	toCheck := []Stone{}
-	friends := []Stone{}
-	group = append(group, stone)
-	toCheck = append(toCheck, stone)
-
-	for len(toCheck) > 0 {
-		firstToCheck := toCheck[:1]
-
-		friends = findFriendsForStone(firstToCheck[0], board)
-		for _, friend := range friends {
-			if !isStoneInGroup(friend, group) {
-				group = append(group, friend)
-				toCheck = append(toCheck, friend)
-			}
-		}
-		toCheck = toCheck[1:]
-	}
-
-	return group
-}
-
-func findLibertiesForStone(stone Stone, board [][]int) []Stone {
-	neighboors := findNeighboors(stone, board)
-	liberties := []Stone{}
-
-	for _, liberty := range neighboors {
-		if liberty.Color == 0 {
-			liberties = append(liberties, liberty)
-		}
-	}
-
-	return liberties
-}
-
-func findLibertiesForGroup(group []Stone, board [][]int) []Stone {
-	groupLiberties := []Stone{}
-	stoneLiberties := []Stone{}
-
-	for _, stone := range group {
-		stoneLiberties = findLibertiesForStone(stone, board)
+	for _, s := range group {
+		stoneLiberties = s.FindLiberties(board)
 		for _, liberty := range stoneLiberties {
-			if !isStoneInGroup(liberty, groupLiberties) {
+			if !liberty.IsInGroup(groupLiberties) {
 				groupLiberties = append(groupLiberties, liberty)
 			}
 		}
@@ -179,19 +52,13 @@ func findLibertiesForGroup(group []Stone, board [][]int) []Stone {
 	return groupLiberties
 }
 
-func countStoneLiberties(stone Stone, board [][]int) int {
-	liberties := findLibertiesForStone(stone, board)
-
-	return len(liberties)
-}
-
-func countGroupLiberties(group []Stone, board [][]int) int {
+func countGroupLiberties(group Stones, board [][]int) int {
 	liberties := findLibertiesForGroup(group, board)
 
 	return len(liberties)
 }
 
-func isGroupAlive(group []Stone, board [][]int) bool {
+func isGroupAlive(group Stones, board [][]int) bool {
 	libertiesNumber := countGroupLiberties(group, board)
 
 	return libertiesNumber != 0
@@ -199,6 +66,10 @@ func isGroupAlive(group []Stone, board [][]int) bool {
 
 func printBoardToConsole(board [][]int) {
 	xAxis := []string{"X ", "| ", "V "}
+	for i := 3; i < len(board); i++ {
+		xAxis = append(xAxis, "  ")
+	}
+
 	fmt.Println("\n  Y->")
 	for _, row := range board {
 		fmt.Printf(xAxis[0])
@@ -219,35 +90,32 @@ func getMovesPartOfGameRecordAsArray(record string) []string {
 	return movesArray
 }
 
-func transformMoveToStone(move string) Stone {
-	color := move[0:1]
-	x := move[2:3]
-	y := move[3:4]
+func getBoardSizeFromRecord(record string) int {
+	r := regexp.MustCompile(`SZ\[(\d+)\]`)
+	result := r.FindStringSubmatch(record)
+	size, _ := strconv.Atoi(result[1])
 
-	return Stone{
-		stoneColors[color],
-		coordinates[x],
-		coordinates[y],
-	}
+	return size
 }
 
-func transformMovesToStones(moves []string) []Stone {
-	stones := []Stone{}
+func transformMovesToStones(moves []string) Stones {
+	stones := Stones{}
 	for _, move := range moves {
-		stones = append(stones, transformMoveToStone(move))
+		stones = append(stones, stone.TransformMoveToStone(move))
 	}
 
 	return stones
 }
 
-func getMovesFromGameRecord(record string) []Stone {
+func getMovesFromGameRecord(record string) Stones {
 	moves := getMovesPartOfGameRecordAsArray(record)
 
 	return transformMovesToStones(moves)
 }
 
 func writeGameOnBoard(record string) [][]int {
-	board := buildEmptyBoard(3)
+	size := getBoardSizeFromRecord(record)
+	board := buildEmptyBoard(size)
 
 	return playGame(getMovesFromGameRecord(record), board)
 }
