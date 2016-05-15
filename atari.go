@@ -24,7 +24,7 @@ func buildEmptyBoard(size int) [][]int {
 	return board
 }
 
-func playGame(moves Stones, board [][]int) [][]int {
+func putStonesOnBoard(moves Stones, board [][]int) [][]int {
 	for _, s := range moves {
 		if s.IsMovePossible(board) {
 			s.PutOnBoard(board)
@@ -117,5 +117,5 @@ func writeGameOnBoard(record string) [][]int {
 	size := getBoardSizeFromRecord(record)
 	board := buildEmptyBoard(size)
 
-	return playGame(getMovesFromGameRecord(record), board)
+	return putStonesOnBoard(getMovesFromGameRecord(record), board)
 }

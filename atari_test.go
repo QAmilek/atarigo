@@ -34,11 +34,11 @@ func TestPlayingGame(t *testing.T) {
 		{Stones{{2, 1, 1}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 2, 0}, []int{0, 0, 0}}},
 	}
 	for _, c := range cases {
-		got := playGame(c.stones, c.inBoard)
+		got := putStonesOnBoard(c.stones, c.inBoard)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
-			//fmt.Println("\nTest playGame(stones, emptyBoard) function:")
+			//fmt.Println("\nTest putStonesOnBoard(stones, emptyBoard) function:")
 			//fmt.Printf("stones: %v\nresult: %v\n", c.stones, c.want)
 		}
 	}
@@ -54,7 +54,7 @@ func TestPlayingGameWithIllegalMove(t *testing.T) {
 		{Stones{{1, 1, 1}, {2, 1, 2}, {1, 1, 1}, {2, 2, 2}}, [][]int{[]int{0, 0, 0}, []int{0, 0, 0}, []int{0, 0, 0}}, [][]int{[]int{0, 0, 0}, []int{0, 1, 2}, []int{0, 0, 0}}},
 	}
 	for _, c := range cases {
-		got := playGame(c.stones, c.inBoard)
+		got := putStonesOnBoard(c.stones, c.inBoard)
 		if !reflect.DeepEqual(got, c.want) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.want, got)
 		} else {
