@@ -144,7 +144,7 @@ func TestGetBoardSizeFromRecord(t *testing.T) {
 		if !reflect.DeepEqual(got, c.boardSize) {
 			t.Errorf("\nWant: %v\nGot:  %v\n", c.boardSize, got)
 		} else {
-			fmt.Printf("\nGame record: %v\nBoard size: %v\n", c.gameRecord, c.boardSize)
+			// fmt.Printf("\nGame record: %v\nBoard size: %v\", c.gameRecord, c.boardSize)
 		}
 	}
 }
@@ -185,6 +185,7 @@ func TestWritingGameOnBoard(t *testing.T) {
 		stonesOnBoard [][]int
 	}{
 		{"(;SZ[3]PB[Lee]PW[Alpha]RE[B+1];B[bb];W[ab];B[aa];W[ba])", [][]int{{1, 2, 0}, {2, 1, 0}, {0, 0, 0}}},
+		{"(;SZ[8]PB[Radek]PW[Kamil]RE[B];B[cc];W[be];B[ce];W[cf];B[df];W[bg];B[cg];W[bf];B[dg];W[cd];B[de];W[dd];B[bc];W[bd];B[eb];W[ff];B[fe];W[ge];B[ed];W[fd];B[ee];W[fc];B[ec];W[fb];B[ad];W[ae];B[ac];W[bh];B[gg];W[gf];B[fg];W[ea];B[da];W[fa];B[dc])", [][]int{{0, 0, 1, 1, 2, 0, 0, 0}, {0, 0, 1, 2, 2, 2, 2, 2}, {0, 0, 1 ,2, 1, 2, 1, 0}, {1, 0, 1, 2, 1, 1, 1, 0}, {2, 1, 1, 1, 1, 0, 0, 0}, {2, 2, 2, 2, 1, 2, 1, 0}, {0, 0, 0, 0, 2, 2, 1, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}},
 	}
 	for _, c := range cases {
 		got := writeGameOnBoard(c.gameRecord)

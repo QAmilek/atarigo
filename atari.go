@@ -66,6 +66,10 @@ func isGroupAlive(group Stones, board [][]int) bool {
 
 func printBoardToConsole(board [][]int) {
 	xAxis := []string{"X ", "| ", "V "}
+	for i := 3; i < len(board); i++ {
+		xAxis = append(xAxis, "  ")
+	}
+
 	fmt.Println("\n  Y->")
 	for _, row := range board {
 		fmt.Printf(xAxis[0])
@@ -87,7 +91,7 @@ func getMovesPartOfGameRecordAsArray(record string) []string {
 }
 
 func getBoardSizeFromRecord(record string) int {
-	r := regexp.MustCompile(`SZ\[(?P<size>\d+)\]`)
+	r := regexp.MustCompile(`SZ\[(\d+)\]`)
 	result := r.FindStringSubmatch(record)
 	size, _ := strconv.Atoi(result[1])
 
@@ -110,7 +114,8 @@ func getMovesFromGameRecord(record string) Stones {
 }
 
 func writeGameOnBoard(record string) [][]int {
-	board := buildEmptyBoard(3)
+	size := getBoardSizeFromRecord(record)
+	board := buildEmptyBoard(size)
 
 	return playGame(getMovesFromGameRecord(record), board)
 }
